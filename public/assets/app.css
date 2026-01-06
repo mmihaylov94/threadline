@@ -1,0 +1,17 @@
+:root {
+  --bs-primary: #5b7cfa;
+}
+
+body {
+  background: #f6f7fb;
+}
+.card {
+  border: 0;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
