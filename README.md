@@ -1,74 +1,168 @@
-Threadline
-Enables moderated community discussions with clear roles and controls.
+# Threadline
 
-Community forum built for structured discussions and moderation-ready operations. Includes authentication, category-based forums, threaded posts and replies, role-based moderation, reporting and content approval, notifications, and activity metrics to support healthy communities from launch.
+**Threadline** is a moderated community forum built with **CodeIgniter 4**, designed to support structured discussions and healthy communities from day one.
 
-# CodeIgniter 4 Application Starter
+The project focuses on **clean backend architecture**, **role-based moderation**, and **progressive enhancement**, rather than heavy front-end frameworks.
 
-## What is CodeIgniter?
+---
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+## Purpose
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+Threadline is a **portfolio-grade application** that demonstrates:
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+- Strong PHP & CodeIgniter 4 fundamentals
+- Secure authentication and authorization
+- Moderation-ready workflows
+- Clean separation of concerns (controllers, services, views)
+- Practical JavaScript usage for interactivity
+- Scalable forum data structures
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+---
 
-## Installation & updates
+## Core Features
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+### Authentication & Accounts
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+- User registration and login
+- Email verification
+- Password reset
+- Role-based access control
+- Optional social login (Google)
 
-## Setup
+### Forum Structure
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+- Category-based forums
+- Thread creation
+- Threaded replies
+- Pagination for threads and posts
+- Read/unread tracking
 
-## Important Change with index.php
+### Moderation & Safety
 
-`index.php` is no longer in the root of the project! It has been moved inside the _public_ folder,
-for better security and separation of components.
+- Role-based moderation (Admin / Moderator / Member)
+- Post reporting
+- Content approval queue
+- Soft deletes and audit trails
+- Locked threads
+- User suspension / bans
 
-This means that you should configure your web server to "point" to your project's _public_ folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter _public/..._, as the rest of your logic and the
-framework are exposed.
+### Community & Engagement
 
-**Please** read the user guide for a better explanation of how CI4 works!
+- User profiles
+- Activity metrics (post count, reputation)
+- Notifications (replies, mentions, moderation actions)
+- Latest activity feed
 
-## Repository Management
+### Security
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+- CSRF protection
+- XSS filtering and output escaping
+- CAPTCHA protection on public forms
+- Rate-limiting for posting and auth attempts
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+---
 
-## Server Requirements
+## Pages & Routes
 
-PHP version 8.1 or higher is required, with the following extensions installed:
+### Public
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
+- `/` — Home / Recent activity
+- `/login`
+- `/register`
+- `/forgot-password`
+- `/verify-email`
+- `/categories`
+- `/threads/{slug}`
+- `/threads/{slug}/page/{n}`
+- `/users/{username}`
 
-> [!WARNING]
->
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - If you are still using PHP 7.4 or 8.0, you should upgrade immediately.
-> - The end of life date for PHP 8.1 will be December 31, 2025.
+### Authenticated Users
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+- `/threads/create`
+- `/threads/{id}/reply`
+- `/profile`
+- `/notifications`
+- `/settings`
 
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+### Moderation
+
+- `/moderation/dashboard`
+- `/moderation/reports`
+- `/moderation/queue`
+- `/moderation/users`
+- `/moderation/threads/{id}`
+
+### Admin
+
+- `/admin/categories`
+- `/admin/roles`
+- `/admin/settings`
+- `/admin/audit-log`
+
+---
+
+## Technology Stack
+
+### Backend
+
+- PHP 8.1+
+- CodeIgniter 4
+- MySQL
+- MVC + Services architecture
+
+### Frontend
+
+- Server-rendered views (PHP)
+- Bootstrap 5 (styling)
+- Vanilla JavaScript (no framework)
+- Progressive enhancement (fetch/AJAX where appropriate)
+
+### Tooling
+
+- Composer
+- Git
+
+---
+
+## Third-Party Services
+
+### Authentication
+
+- **Google Sign-In (OAuth 2.0)**
+  - Used for social login
+  - Requires Google Cloud project and credentials
+
+### Bot Protection
+
+- **Google reCAPTCHA v3**
+  - Used on:
+    - Registration
+    - Login
+    - Password reset
+
+### Email Delivery
+
+- SMTP provider (e.g. Gmail SMTP, Mailgun, SendGrid)
+- Required for:
+  - Email verification
+  - Password reset
+  - Notifications (optional)
+
+---
+
+## Environment Configuration
+
+Example `.env` values:
+
+```ini
+CI_ENVIRONMENT = development
+
+app.baseURL = 'http://localhost:8080/'
+
+database.default.hostname = localhost
+database.default.database = threadline
+database.default.username = root
+database.default.password =
+database.default.DBDriver = sqlsrv
+database.default.port = 1433
+```
