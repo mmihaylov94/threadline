@@ -9,15 +9,15 @@
 			<link href="<?= base_url('assets/app.css') ?>" rel="stylesheet">
 	</head>
 	<body class="bg-light">
-		<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-				<div class="container">
-						<a class="navbar-brand" href="<?= base_url('/') ?>">My Forum</a>
-				</div>
-		</nav>
+
+		<?= $this->include('partials/header') ?>
+
 		<main class="container my-4">
 				<?= $this->renderSection('content') ?>
 		</main>
+
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="<?= base_url('assets/app.js') ?>"></script>
+		<?= $this->renderSection('scripts') ?>
 	</body>
 </html>
