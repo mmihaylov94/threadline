@@ -47,6 +47,16 @@ $themeMode = get_theme_mode();
 			<?= $this->renderSection('content') ?>
 		</main>
 
+		<?php
+		// Don't show footer on auth pages
+		$uri = service('uri');
+		$firstSegment = $uri->getSegment(1);
+		$authPages = ['login', 'register', 'forgot-password', 'reset-password', 'verify-email'];
+		if (!in_array($firstSegment, $authPages)):
+		?>
+		<?= $this->include('partials/footer') ?>
+		<?php endif; ?>
+
 		<script src="<?= base_url('assets/theme.js') ?>"></script>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>

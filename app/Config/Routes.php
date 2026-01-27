@@ -8,6 +8,9 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'HomeController::index');
 $routes->post('newsletter', 'HomeController::newsletter');
 
+// Support (public)
+$routes->get('support', 'SupportController::index');
+
 // Authentication routes
 $routes->group('', ['filter' => 'guest'], static function ($routes) {
     $routes->match(['GET', 'POST'], 'login', 'AuthController::login');

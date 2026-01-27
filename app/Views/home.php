@@ -25,44 +25,41 @@ if (session()->getFlashdata('success')):
             <h1 class="home-hero__title">Thoughtful discussion starts here</h1>
             <p class="home-hero__subtitle">Threadline is a clean, moderated community forum built for serious conversation. No noise. No algorithms. Just good people talking about what matters.</p>
             <div class="home-hero__actions">
+                <?php if (!$isLoggedIn): ?>
                 <a class="btn btn-hero-join" href="<?= base_url('register') ?>">Join</a>
+                <?php endif; ?>
                 <a class="btn btn-hero-browse" href="<?= base_url('threads') ?>">Browse</a>
             </div>
         </div>
     </div>
 </section>
 
-
-<!-- Three pillars -->
-<section class="home-pillars">
+<!-- Recent -->
+<section class="home-recent" id="recent">
     <div class="container">
-        <h2 class="home-pillars__title">Three pillars of trust</h2>
-        <p class="home-pillars__sub">Threadline organizes discussion into clear threads with nested replies</p>
-        <div class="home-pillars__grid">
-            <div class="home-pillar-card">
-                <div class="home-pillar-card__body">
-                    <div class="home-pillar-card__label">Structure</div>
-                    <p class="home-pillar-card__desc">Posts stay organized by topic with visible reply chains</p>
-                    <a class="home-pillar-card__link" href="<?= base_url('threads') ?>">Learn &gt;</a>
-                </div>
-                <img class="home-pillar-card__img" src="https://picsum.photos/seed/threadline-pillar1/800/400" alt="">
+        <div class="home-recent__head">
+            <div>
+                <div class="home-recent__label">Recent</div>
+                <h2 class="home-recent__title">What people are discussing</h2>
+                <p class="home-recent__desc">The latest threads from across Threadline, sorted by activity and relevance to keep you in the conversation.</p>
             </div>
-            <div class="home-pillar-card">
-                <div class="home-pillar-card__body">
-                    <div class="home-pillar-card__label">Moderation</div>
-                    <p class="home-pillar-card__desc">Moderators keep conversations civil and on track</p>
-                    <a class="home-pillar-card__link" href="<?= base_url('/') ?>#moderation">Learn &gt;</a>
+            <a class="btn btn-view-all" href="<?= base_url('threads') ?>">View all</a>
+        </div>
+        <div class="home-recent__cards">
+            <?php foreach ($recentThreads as $t): ?>
+            <article class="home-recent-card">
+                <img class="home-recent-card__img" src="<?= esc($t['img']) ?>" alt="">
+                <div class="home-recent-card__body">
+                    <div class="home-recent-card__meta">
+                        <span class="home-recent-card__cat"><?= esc($t['category']) ?></span>
+                        <span class="home-recent-card__time"><?= esc($t['time']) ?></span>
+                    </div>
+                    <h3 class="home-recent-card__title"><?= esc($t['title']) ?></h3>
+                    <p class="home-recent-card__desc"><?= esc($t['desc']) ?></p>
+                    <a class="home-recent-card__link" href="<?= base_url('threads/' . esc($t['slug'] ?? '')) ?>">Read more &gt;</a>
                 </div>
-                <img class="home-pillar-card__img" src="https://picsum.photos/seed/threadline-pillar2/800/400" alt="">
-            </div>
-            <div class="home-pillar-card">
-                <div class="home-pillar-card__body">
-                    <div class="home-pillar-card__label">Control</div>
-                    <p class="home-pillar-card__desc">Members, moderators, and admins each have clear permissions</p>
-                    <a class="home-pillar-card__link" href="<?= base_url('categories') ?>">Learn &gt;</a>
-                </div>
-                <img class="home-pillar-card__img" src="https://picsum.photos/seed/threadline-pillar3/800/400" alt="">
-            </div>
+            </article>
+            <?php endforeach; ?>
         </div>
     </div>
 </section>
@@ -97,36 +94,6 @@ if (session()->getFlashdata('success')):
                     <div class="home-stat-card__label">Dedicated moderators</div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
-
-<!-- Recent -->
-<section class="home-recent" id="recent">
-    <div class="container">
-        <div class="home-recent__head">
-            <div>
-                <div class="home-recent__label">Recent</div>
-                <h2 class="home-recent__title">What people are discussing</h2>
-                <p class="home-recent__desc">The latest threads from across Threadline, sorted by activity and relevance to keep you in the conversation.</p>
-            </div>
-            <a class="btn btn-view-all" href="<?= base_url('threads') ?>">View all</a>
-        </div>
-        <div class="home-recent__cards">
-            <?php foreach ($recentThreads as $t): ?>
-            <article class="home-recent-card">
-                <img class="home-recent-card__img" src="<?= esc($t['img']) ?>" alt="">
-                <div class="home-recent-card__body">
-                    <div class="home-recent-card__meta">
-                        <span class="home-recent-card__cat"><?= esc($t['category']) ?></span>
-                        <span class="home-recent-card__time"><?= esc($t['time']) ?></span>
-                    </div>
-                    <h3 class="home-recent-card__title"><?= esc($t['title']) ?></h3>
-                    <p class="home-recent-card__desc"><?= esc($t['desc']) ?></p>
-                    <a class="home-recent-card__link" href="<?= base_url('threads/' . esc($t['slug'] ?? '')) ?>">Read more &gt;</a>
-                </div>
-            </article>
-            <?php endforeach; ?>
         </div>
     </div>
 </section>
@@ -175,63 +142,6 @@ if (session()->getFlashdata('success')):
     </div>
 </section>
 
-<!-- FAQ -->
-<section class="home-faq" id="faq">
-    <div class="container">
-        <h2 class="home-faq__title">FAQ</h2>
-        <p class="home-faq__intro">Find answers to common questions about how Threadline works and what to expect.</p>
-
-        <div class="accordion accordion-faq" id="faqAccordion">
-            <div class="accordion-item">
-                <h3 class="accordion-header">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="true" aria-controls="faq1">How do I start a thread?</button>
-                </h3>
-                <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">Log in to your account and navigate to the category where your discussion belongs. Click the create thread button, write your post, and submit. Your thread will appear immediately unless it requires moderation review.</div>
-                </div>
-            </div>
-            <div class="accordion-item">
-                <h3 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false" aria-controls="faq2">What are moderator responsibilities?</button>
-                </h3>
-                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">Moderators review reported content, enforce community guidelines, and keep discussions on track. They can approve, edit, or remove posts that violate rules and communicate decisions to members.</div>
-                </div>
-            </div>
-            <div class="accordion-item">
-                <h3 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false" aria-controls="faq3">Can I edit my posts?</button>
-                </h3>
-                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">Yes, you can edit your own posts within a certain timeframe after posting. Edits are tracked and visible to other members to maintain transparency.</div>
-                </div>
-            </div>
-            <div class="accordion-item">
-                <h3 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="false" aria-controls="faq4">How is content moderated?</button>
-                </h3>
-                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">Members report content they believe violates guidelines. Moderators review reports in their dashboard and take appropriate action. Decisions are logged and can be appealed.</div>
-                </div>
-            </div>
-            <div class="accordion-item">
-                <h3 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5" aria-expanded="false" aria-controls="faq5">What happens if I break rules?</button>
-                </h3>
-                <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                    <div class="accordion-body">Violations result in warnings, post removal, or account suspension depending on severity. Moderators will explain the violation and what to do differently next time.</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="home-faq__more">
-            <h3 class="home-faq__more-title">More questions</h3>
-            <p class="home-faq__more-desc">Reach out to our support team if you need further assistance.</p>
-            <a class="btn btn-contact" href="<?= base_url('/') ?>#get-in-touch">Contact</a>
-        </div>
-    </div>
-</section>
-
 <!-- Testimonials -->
 <section class="home-testimonials">
     <div class="container">
@@ -273,55 +183,5 @@ if (session()->getFlashdata('success')):
         <p class="home-newsletter__consent">By subscribing you agree to receive updates from Threadline</p>
     </div>
 </section>
-
-<!-- Get in touch -->
-<section class="home-contact" id="get-in-touch">
-    <div class="container">
-        <h2 class="home-contact__title">Get in touch</h2>
-        <p class="home-contact__intro">Have questions about Threadline or need help with your account? We're here to help</p>
-        <div class="home-contact__grid">
-            <div class="home-contact-card">
-                <svg class="home-contact-card__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                <h3 class="home-contact-card__title">Email</h3>
-                <p class="home-contact-card__desc">Reach out with questions or feedback about the platform</p>
-                <p class="home-contact-card__value">support@threadline.com</p>
-            </div>
-            <div class="home-contact-card">
-                <svg class="home-contact-card__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                <h3 class="home-contact-card__title">Phone</h3>
-                <p class="home-contact-card__desc">Call us during business hours for urgent support needs</p>
-                <p class="home-contact-card__value">+1 (555) 847-2934</p>
-            </div>
-            <div class="home-contact-card">
-                <svg class="home-contact-card__icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                <h3 class="home-contact-card__title">Office</h3>
-                <p class="home-contact-card__desc">Visit us or send mail to our headquarters</p>
-                <p class="home-contact-card__value">456 Forum Lane, San Francisco CA 94105 US</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Footer -->
-<footer class="home-footer">
-    <div class="container">
-        <a class="home-footer__logo" href="<?= base_url('/') ?>">Threadline</a>
-        <nav class="home-footer__nav">
-            <a href="<?= base_url('categories') ?>">Categories</a>
-            <a href="<?= base_url('threads') ?>">Threads</a>
-            <a href="<?= base_url('/') ?>#">Dashboard</a>
-            <a href="<?= base_url('/') ?>#">Profile</a>
-            <a href="<?= base_url('/') ?>#">About</a>
-        </nav>
-        <div class="home-footer__bottom">
-            <span>© 2025 Threadline. All rights reserved.</span>
-            <div class="home-footer__legal">
-                <a href="<?= base_url('/') ?>#">Privacy policy</a>
-                <a href="<?= base_url('/') ?>#">Terms of service</a>
-                <a href="<?= base_url('/') ?>#">Cookie settings</a>
-            </div>
-        </div>
-    </div>
-</footer>
 
 <?= $this->endSection() ?>

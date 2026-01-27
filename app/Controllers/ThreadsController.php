@@ -28,7 +28,7 @@ class ThreadsController extends BaseController
             }
         }
 
-        $result = $threadModel->getRecentPaginated(20, $categorySlug);
+        $result = $threadModel->getRecentPaginated(10, $categorySlug);
         $categories = $categoryModel->getAllForSelect();
 
         return view('threads/list', [

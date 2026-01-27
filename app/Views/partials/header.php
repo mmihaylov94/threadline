@@ -34,9 +34,9 @@ if ($isLoggedIn) {
                         <a class="nav-link dropdown-toggle" href="#" id="resourcesDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">Resources</a>
                         <ul class="dropdown-menu" aria-labelledby="resourcesDropdown">
-                            <li><a class="dropdown-item" href="<?= base_url('/') ?>#faq">Guidelines</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url('support') ?>#faq">Guidelines</a></li>
                             <li><a class="dropdown-item" href="<?= base_url('/') ?>#">Dashboard</a></li>
-                            <li><a class="dropdown-item" href="<?= base_url('/') ?>#get-in-touch">Support</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url('support') ?>#get-in-touch">Support</a></li>
                         </ul>
                     </li>
                 </ul>

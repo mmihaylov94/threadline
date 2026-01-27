@@ -50,6 +50,13 @@ Threadline is a **portfolio-grade application** that demonstrates:
 - Moderation dashboards, reports, queues, audit logs
 - Read/unread tracking
 - Full notifications system (delivery + UI)
+- Searching threads
+- Favorite threads
+- Cookies pop-up
+- Guidelines page
+- Footer section
+
+
 
 ### Security
 
@@ -146,29 +153,4 @@ Routes below reflect `app/Config/Routes.php`.
 
 ## Environment Configuration
 
-Example `.env` values:
-
-```ini
-CI_ENVIRONMENT = development
-
-app.baseURL = 'http://localhost:8080/'
-
-database.default.hostname = localhost
-database.default.database = threadline
-database.default.username = threadline_user
-database.default.password = 
-database.default.DBDriver = Postgre
-database.default.port = 5432
-database.default.charset = utf8
-```
-
----
-
-## Developer Notes
-
-### Model return types
-
-All application models are configured to return **associative arrays**:
-
-- `protected $returnType = 'array';`
-- Access fields as `$row['field']` (not `$row->field`)
+See `env` file
