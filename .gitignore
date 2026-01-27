@@ -124,3 +124,10 @@ _modules/*
 
 /results/
 /phpunit*.xml
+
+# Uploads - These should never be under version control
+public/uploads/threads/*
+!public/uploads/threads/index.html
+
+public/uploads/avatars/*
+!public/uploads/avatars/index.html

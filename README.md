@@ -21,37 +21,35 @@ Threadline is a **portfolio-grade application** that demonstrates:
 
 ## Core Features
 
-### Authentication & Accounts
+### Implemented
 
-- User registration and login
-- Email verification
-- Password reset
-- Role-based access control
-- Optional social login (Google)
+- **Authentication & Accounts**
+  - User registration and login
+  - Email verification
+  - Password reset
+  - Optional social login (Google OAuth)
 
-### Forum Structure
+- **Forum**
+  - Category browsing
+  - Thread creation + editing (author-only)
+  - Replies
+  - Pagination for threads and replies
+  - Optional thread background images
 
-- Category-based forums
-- Thread creation
-- Threaded replies
-- Pagination for threads and posts
+- **Profiles & Settings**
+  - Public user profiles
+  - Profile editing (avatar, display name, bio)
+  - Preferences (timezone, marketing + notification preferences)
+
+- **UI**
+  - Light / Dark / Auto theme modes (stored per user)
+
+### Planned / Not Yet Implemented
+
+- Role-based access control (Admin / Moderator / Member)
+- Moderation dashboards, reports, queues, audit logs
 - Read/unread tracking
-
-### Moderation & Safety
-
-- Role-based moderation (Admin / Moderator / Member)
-- Post reporting
-- Content approval queue
-- Soft deletes and audit trails
-- Locked threads
-- User suspension / bans
-
-### Community & Engagement
-
-- User profiles
-- Activity metrics (post count, reputation)
-- Notifications (replies, mentions, moderation actions)
-- Latest activity feed
+- Full notifications system (delivery + UI)
 
 ### Security
 
@@ -64,40 +62,34 @@ Threadline is a **portfolio-grade application** that demonstrates:
 
 ## Pages & Routes
 
+Routes below reflect `app/Config/Routes.php`.
+
 ### Public
 
-- `/` — Home / Recent activity
-- `/login`
-- `/register`
-- `/forgot-password`
-- `/verify-email`
-- `/categories`
-- `/threads/{slug}`
-- `/threads/{slug}/page/{n}`
-- `/users/{username}`
+- `/` — Home
+- `/newsletter` (POST)
+- `/login` (GET/POST)
+- `/register` (GET/POST)
+- `/forgot-password` (GET/POST)
+- `/verify-email/{token}` (GET)
+- `/reset-password/{token}` (GET/POST)
+- `/auth/google` (GET)
+- `/auth/google/callback` (GET)
+- `/categories` (GET)
+- `/threads` (GET)
+- `/threads/{slug}` (GET)
+- `/threads/{slug}/page/{n}` (GET)
+- `/users/{username}` (GET)
 
 ### Authenticated Users
 
-- `/threads/create`
-- `/threads/{id}/reply`
-- `/profile`
-- `/notifications`
-- `/settings`
-
-### Moderation
-
-- `/moderation/dashboard`
-- `/moderation/reports`
-- `/moderation/queue`
-- `/moderation/users`
-- `/moderation/threads/{id}`
-
-### Admin
-
-- `/admin/categories`
-- `/admin/roles`
-- `/admin/settings`
-- `/admin/audit-log`
+- `/threads/create` (GET/POST)
+- `/threads/{id}/edit` (GET/POST)
+- `/threads/{slug}/reply` (POST)
+- `/settings` (GET)
+- `/settings/profile` (POST)
+- `/settings/preferences` (POST)
+- `/settings/password` (POST)
 
 ---
 
@@ -107,7 +99,7 @@ Threadline is a **portfolio-grade application** that demonstrates:
 
 - PHP 8.1+
 - CodeIgniter 4
-- MySQL
+- PostgreSQL
 - MVC + Services architecture
 
 ### Frontend
@@ -115,12 +107,14 @@ Threadline is a **portfolio-grade application** that demonstrates:
 - Server-rendered views (PHP)
 - Bootstrap 5 (styling)
 - Vanilla JavaScript (no framework)
-- Progressive enhancement (fetch/AJAX where appropriate)
+- Progressive enhancement where appropriate
+- Quill editor via CDN for rich text
 
 ### Tooling
 
 - Composer
 - Git
+- Optional: Node/Webpack (legacy editor build scripts in `package.json`)
 
 ---
 
@@ -161,8 +155,20 @@ app.baseURL = 'http://localhost:8080/'
 
 database.default.hostname = localhost
 database.default.database = threadline
-database.default.username = root
-database.default.password =
-database.default.DBDriver = sqlsrv
-database.default.port = 1433
+database.default.username = threadline_user
+database.default.password = 
+database.default.DBDriver = Postgre
+database.default.port = 5432
+database.default.charset = utf8
 ```
+
+---
+
+## Developer Notes
+
+### Model return types
+
+All application models are configured to return **associative arrays**:
+
+- `protected $returnType = 'array';`
+- Access fields as `$row['field']` (not `$row->field`)

@@ -1,0 +1,151 @@
+<?php
+
+namespace App\Models;
+
+use CodeIgniter\Model;
+
+class ThreadModel extends Model
+{
+    protected $table            = 'threads';
+    protected $returnType       = 'array';
+    protected $allowedFields    = [
+        'category_id',
+        'author_id',
+        'title',
+        'slug',
+        'body',
+        'locked',
+        'post_count',
+        'last_post_at',
+        'edited_at',
+        'background_image',
+    ];
+
+    protected $useTimestamps = true;
+    protected $createdField  = 'created_at';
+    protected $updatedField  = 'updated_at';
+    protected $deletedField  = 'deleted_at';
+
+    protected $validationRules = [
+        'category_id' => 'required|is_natural_no_zero|is_not_unique[categories.id]',
+        'title'       => 'required|max_length[255]',
+        'body'             => 'required',
+        'background_image' => 'permit_empty|max_length[500]',
+    ];
+
+    protected $validationMessages = [
+        'category_id' => [
+            'required'         => 'Please select a category.',
+            'is_natural_no_zero' => 'Invalid category.',
+            'is_not_unique'    => 'Invalid category.',
+        ],
+        'title' => [
+            'required'   => 'Title is required.',
+            'max_length' => 'Title cannot exceed 255 characters.',
+        ],
+        'body' => [
+            'required' => 'Body is required.',
+        ],
+    ];
+
+    /**
+     * Get recent threads paginated, with category and author, optionally filtered by category slug
+     */
+    public function getRecentPaginated(int $perPage = 20, ?string $categorySlug = null): array
+    {
+        $builder = $this->select('threads.*, categories.name as category_name, categories.slug as category_slug, users.username as author_username')
+            ->join('categories', 'categories.id = threads.category_id')
+            ->join('users', 'users.id = threads.author_id');
+
+        if ($categorySlug !== null && $categorySlug !== '') {
+            $builder->where('categories.slug', $categorySlug);
+        }
+
+        $threads = $builder->orderBy('COALESCE(threads.last_post_at, threads.created_at)', 'DESC', false)
+            ->paginate($perPage);
+
+        return ['threads' => $threads, 'pager' => $this->pager];
+    }
+
+    /**
+     * Find thread by slug with category and author
+     */
+    public function findBySlug(string $slug)
+    {
+        return $this->select('threads.*, categories.name as category_name, categories.slug as category_slug, users.username as author_username')
+            ->join('categories', 'categories.id = threads.category_id')
+            ->join('users', 'users.id = threads.author_id')
+            ->where('threads.slug', $slug)
+            ->first();
+    }
+
+    /**
+     * Generate a unique slug from a title
+     */
+    public function generateSlug(string $title): string
+    {
+        helper('text');
+        $base = url_title($title, '-', true);
+        if ($base === '') {
+            $base = 'thread';
+        }
+        $slug = $base;
+        $n = 2;
+        while ($this->where('slug', $slug)->first() !== null) {
+            $slug = $base . '-' . $n;
+            $n++;
+        }
+        return $slug;
+    }
+
+    /**
+     * Increment post count for a thread
+     */
+    public function incrementPostCount(int $threadId): bool
+    {
+        $thread = $this->find($threadId);
+        if (!$thread) {
+            return false;
+        }
+        return $this->update($threadId, ['post_count' => (int) ($thread['post_count'] ?? 0) + 1]);
+    }
+
+    /**
+     * Update last_post_at for a thread
+     */
+    public function updateLastPostAt(int $threadId, string $at): bool
+    {
+        return $this->update($threadId, ['last_post_at' => $at]);
+    }
+
+    /**
+     * Get recent threads for the home page (no pagination)
+     */
+    public function getRecentForHome(int $limit = 4): array
+    {
+        return $this->select('threads.id, threads.slug, threads.title, threads.body, threads.background_image, threads.created_at, threads.last_post_at, categories.name as category_name, categories.slug as category_slug')
+            ->join('categories', 'categories.id = threads.category_id')
+            ->orderBy('COALESCE(threads.last_post_at, threads.created_at)', 'DESC', false)
+            ->findAll($limit, 0);
+    }
+
+    /**
+     * Get recent threads by author
+     */
+    public function getByAuthor(int $userId, int $limit = 10): array
+    {
+        return $this->select('threads.id, threads.slug, threads.title, threads.created_at, threads.last_post_at, categories.name as category_name, categories.slug as category_slug')
+            ->join('categories', 'categories.id = threads.category_id')
+            ->where('threads.author_id', $userId)
+            ->orderBy('threads.created_at', 'DESC')
+            ->findAll($limit, 0);
+    }
+
+    /**
+     * Count threads by author
+     */
+    public function countByAuthor(int $userId): int
+    {
+        return $this->where('threads.author_id', $userId)->countAllResults(false);
+    }
+}

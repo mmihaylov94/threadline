@@ -1,0 +1,284 @@
+/* Auth pages: match home page style */
+.auth-page {
+  padding: 3rem 1.5rem;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.auth-page--wide {
+  max-width: 900px;
+}
+
+.auth-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+[data-bs-theme="dark"] .auth-card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.auth-card .card-body {
+  padding: 2rem;
+}
+
+.auth-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  transition: color 0.2s ease;
+}
+
+.auth-card .form-label {
+  color: var(--text-primary);
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.auth-card .form-control {
+  border-radius: 0.375rem;
+  border-color: var(--border-color);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.auth-card .form-control:focus {
+  border-color: #8B5CF6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.auth-card .form-select {
+  border-radius: 0.375rem;
+  border-color: var(--border-color);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.auth-card .form-select:focus {
+  border-color: #8B5CF6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.auth-card .form-text {
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+}
+
+.btn-auth-primary {
+  background: #1A1A3A;
+  color: #fff !important;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  width: 100%;
+}
+
+.btn-auth-primary:hover {
+  background: #2d2d5a;
+  color: #fff !important;
+}
+
+.btn-auth-outline {
+  background: transparent;
+  color: #6b7280 !important;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.btn-auth-outline:hover {
+  background: transparent;
+  color: var(--text-primary) !important;
+  text-decoration: underline;
+}
+
+.btn-auth-outline--auto { width: auto !important; }
+
+.auth-divider {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.auth-links {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+
+.auth-link {
+  color: #3B82F6;
+  text-decoration: none;
+}
+
+.auth-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.auth-card .alert {
+  border-radius: 0.375rem;
+  border: 1px solid transparent;
+}
+
+.auth-card .alert-danger {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #991b1b;
+}
+
+.auth-card .alert-success {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+[data-bs-theme="dark"] .auth-card .alert-danger {
+  background: #7f1d1d;
+  border-color: #991b1b;
+  color: #fecaca;
+}
+
+[data-bs-theme="dark"] .auth-card .alert-success {
+  background: #14532d;
+  border-color: #166534;
+  color: #bbf7d0;
+}
+
+/* Verification / result pages */
+.auth-result-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
+}
+
+.auth-result-icon--success {
+  color: #16a34a;
+}
+
+.auth-result-icon--error {
+  color: #dc2626;
+}
+
+.auth-result-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  transition: color 0.2s ease;
+}
+
+.auth-result-message {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  transition: color 0.2s ease;
+}
+
+/* Password requirements (shared by register & reset) */
+.auth-card .req-icon.text-success { color: #16a34a; }
+.auth-card .req-icon.text-muted { color: #9ca3af; }
+
+/* Quill editor styles */
+.auth-card .ql-container {
+  border-radius: 0.375rem;
+  border-color: var(--border-color);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.auth-card .ql-container.ql-snow {
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.auth-card .ql-toolbar.ql-snow {
+  border: 1px solid var(--border-color);
+  border-bottom: none;
+  border-radius: 0.375rem 0.375rem 0 0;
+  background: var(--bg-primary);
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.auth-card .ql-container.ql-snow {
+  border-top: none;
+  border-radius: 0 0 0.375rem 0.375rem;
+}
+
+.auth-card .ql-editor {
+  min-height: 500px;
+  color: var(--text-primary);
+  font-family: inherit;
+  transition: color 0.2s ease;
+}
+
+/* Reply editor (smaller height) */
+#quill-reply-editor .ql-editor {
+  min-height: 300px;
+}
+
+.auth-card .ql-editor.ql-blank::before {
+  color: var(--text-secondary);
+  font-style: normal;
+  transition: color 0.2s ease;
+}
+
+.auth-card .ql-editor:focus {
+  outline: none;
+}
+
+.auth-card .ql-container.ql-snow:focus-within {
+  border-color: #8B5CF6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+
+/* File upload input */
+.auth-card .form-control[type="file"] {
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  border-color: var(--border-color);
+  font-size: 0.9rem;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.auth-card .form-control[type="file"]:focus {
+  border-color: #8B5CF6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+
+/* Dark mode Quill editor overrides */
+[data-bs-theme="dark"] .auth-card .ql-toolbar.ql-snow .ql-stroke {
+  stroke: #9ca3af;
+}
+[data-bs-theme="dark"] .auth-card .ql-toolbar.ql-snow .ql-fill {
+  fill: #9ca3af;
+}
+[data-bs-theme="dark"] .auth-card .ql-toolbar.ql-snow button:hover .ql-stroke,
+[data-bs-theme="dark"] .auth-card .ql-toolbar.ql-snow button.ql-active .ql-stroke {
+  stroke: #f9fafb;
+}
+[data-bs-theme="dark"] .auth-card .ql-toolbar.ql-snow button:hover .ql-fill,
+[data-bs-theme="dark"] .auth-card .ql-toolbar.ql-snow button.ql-active .ql-fill {
+  fill: #f9fafb;
+}

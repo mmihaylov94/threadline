@@ -67,3 +67,33 @@
 #--------------------------------------------------------------------
 
 # logger.threshold = 4
+
+#--------------------------------------------------------------------
+# GOOGLE OAUTH
+#--------------------------------------------------------------------
+
+# GOOGLE_CLIENT_ID = your_google_client_id_here
+# GOOGLE_CLIENT_SECRET = your_google_client_secret_here
+# GOOGLE_REDIRECT_URI = http://localhost:8080/auth/google/callback
+
+#--------------------------------------------------------------------
+# RECAPTCHA
+#--------------------------------------------------------------------
+
+# RECAPTCHA_SITE_KEY = your_recaptcha_site_key_here
+# RECAPTCHA_SECRET_KEY = your_recaptcha_secret_key_here
+# RECAPTCHA_SCORE_THRESHOLD = 0.5
+
+#--------------------------------------------------------------------
+# EMAIL (SMTP)
+#--------------------------------------------------------------------
+
+# Email configuration for sending verification and reset emails
+# email.fromEmail = noreply@threadline.local
+# email.fromName = Threadline
+# email.protocol = smtp
+# email.SMTPHost = smtp.gmail.com
+# email.SMTPUser = your_email@gmail.com
+# email.SMTPPass = your_app_password
+# email.SMTPPort = 587
+# email.SMTPCrypto = tls

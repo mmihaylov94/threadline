@@ -29,4 +29,46 @@ class Services extends BaseService
      *     return new \CodeIgniter\Example();
      * }
      */
+
+    /**
+     * The AuthService class
+     *
+     * @return \App\Services\AuthService
+     */
+    public static function authService(bool $getShared = true)
+    {
+        if ($getShared) {
+            return static::getSharedInstance('authService');
+        }
+
+        return new \App\Services\AuthService();
+    }
+
+    /**
+     * The EmailService class
+     *
+     * @return \App\Services\EmailService
+     */
+    public static function emailService(bool $getShared = true)
+    {
+        if ($getShared) {
+            return static::getSharedInstance('emailService');
+        }
+
+        return new \App\Services\EmailService();
+    }
+
+    /**
+     * The RecaptchaService class
+     *
+     * @return \App\Services\RecaptchaService
+     */
+    public static function recaptchaService(bool $getShared = true)
+    {
+        if ($getShared) {
+            return static::getSharedInstance('recaptchaService');
+        }
+
+        return new \App\Services\RecaptchaService();
+    }
 }
