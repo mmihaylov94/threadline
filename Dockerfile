@@ -1,7 +1,10 @@
 FROM php:8.3-apache
 
 RUN apt-get update && apt-get install -y \
-    libzip-dev zip unzip git \
+    git unzip zip \
+    libzip-dev \
+    libpq-dev \
+    pkg-config \
  && docker-php-ext-install pdo pdo_pgsql pgsql zip \
  && a2enmod rewrite headers \
  && rm -rf /var/lib/apt/lists/*
