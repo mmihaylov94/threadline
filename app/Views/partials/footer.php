@@ -8,7 +8,6 @@ $footerUsername = $footerSession->has('user_id') ? $footerSession->get('username
         <nav class="home-footer__nav">
             <a href="<?= base_url('categories') ?>">Categories</a>
             <a href="<?= base_url('threads') ?>">Threads</a>
-            <a href="<?= base_url('/') ?>#">Dashboard</a>
             <a href="<?= $footerUsername ? base_url('users/' . esc($footerUsername)) : base_url('login') ?>">Profile</a>
             <a href="<?= base_url('support') ?>">Support</a>
             <a href="<?= base_url('guidelines') ?>">Guidelines</a>

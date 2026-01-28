@@ -13,6 +13,9 @@ class PostModel extends Model
         'author_id',
         'parent_id',
         'body',
+        'edited_at',
+        'edited_by_moderator',
+        'vote_score',
     ];
 
     protected $useTimestamps = true;
@@ -32,6 +35,8 @@ class PostModel extends Model
 
     /**
      * Get posts for a thread, paginated, with author username
+     * Excludes soft-deleted posts
+     * Orders by vote score (up-down) then created_at
      */
     public function getPaginatedByThread(int $threadId, int $perPage = 15, ?int $page = null): array
     {
@@ -39,6 +44,8 @@ class PostModel extends Model
             ->join('users', 'users.id = posts.author_id')
             ->join('user_profiles', 'user_profiles.user_id = users.id', 'left')
             ->where('posts.thread_id', $threadId)
+            ->where('posts.deleted_at', null)
+            ->orderBy('posts.vote_score', 'DESC')
             ->orderBy('posts.created_at', 'ASC')
             ->paginate($perPage, 'default', $page);
 
@@ -63,5 +70,30 @@ class PostModel extends Model
     public function countByAuthor(int $userId): int
     {
         return $this->where('posts.author_id', $userId)->countAllResults(false);
+    }
+
+    /**
+     * Soft delete a post
+     */
+    public function softDelete(int $postId): bool
+    {
+        $post = $this->find($postId);
+        if (!$post) {
+            return false;
+        }
+        
+        // Check if already deleted
+        if (!empty($post['deleted_at'])) {
+            return true; // Already deleted
+        }
+        
+        // Use query builder to avoid exception when no rows affected
+        $db = $this->db;
+        $result = $db->table($this->table)
+            ->where('id', $postId)
+            ->where('deleted_at', null)
+            ->update(['deleted_at' => date('Y-m-d H:i:s')]);
+        
+        return $result !== false;
     }
 }

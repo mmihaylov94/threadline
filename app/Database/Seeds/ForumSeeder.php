@@ -10,6 +10,12 @@ class ForumSeeder extends Seeder
     {
         $now = date('Y-m-d H:i:s');
 
+        // If the forum is already seeded, don't duplicate content.
+        // (Categories might already exist; that's fine.)
+        if ($this->db->table('threads')->countAllResults() > 0) {
+            return;
+        }
+
         // 1. Categories (if empty)
         if ($this->db->table('categories')->countAllResults() === 0) {
             $this->db->table('categories')->insertBatch([
@@ -25,41 +31,12 @@ class ForumSeeder extends Seeder
             return;
         }
 
-        // 2. Users (if empty)
+        // 2. Users (required). If empty, create the demo users first.
         if ($this->db->table('users')->countAllResults() === 0) {
-            $users = [
-                ['username' => 'alice', 'email' => 'alice@example.com'],
-                ['username' => 'bob', 'email' => 'bob@example.com'],
-                ['username' => 'charlie', 'email' => 'charlie@example.com'],
-            ];
-            $pw = password_hash('password', PASSWORD_DEFAULT);
-            foreach ($users as $u) {
-                $this->db->table('users')->insert([
-                    'username'         => $u['username'],
-                    'email'            => $u['email'],
-                    'email_verified_at' => $now,
-                    'status'           => 'active',
-                    'created_at'       => $now,
-                    'updated_at'       => $now,
-                ]);
-                $uid = $this->db->insertID();
-                $this->db->table('user_credentials')->insert([
-                    'user_id'       => $uid,
-                    'provider'      => 'local',
-                    'provider_id'   => null,
-                    'password_hash' => $pw,
-                    'created_at'    => $now,
-                    'updated_at'    => $now,
-                ]);
-                $this->db->table('user_profiles')->insert([
-                    'user_id'      => $uid,
-                    'display_name' => $u['username'],
-                    'created_at'   => $now,
-                    'updated_at'   => $now,
-                ]);
-            }
+            $this->call('UserSeeder');
         }
-        $userRows = $this->db->table('users')->select('id')->get()->getResult();
+
+        $userRows = $this->db->table('users')->select('id')->orderBy('id', 'ASC')->get()->getResult();
         $userIds  = array_map(fn ($r) => (int) $r->id, $userRows);
         if (empty($userIds)) {
             return;
@@ -80,13 +57,19 @@ class ForumSeeder extends Seeder
             ['Community guidelines', 'Please read before posting.'],
         ];
         $threadIds = [];
+
+        $threadsHasVoteScore = $this->db->fieldExists('vote_score', 'threads');
+        $threadsHasEditedAt = $this->db->fieldExists('edited_at', 'threads');
+        $threadsHasEditedByModerator = $this->db->fieldExists('edited_by_moderator', 'threads');
+        $threadsHasBackgroundImage = $this->db->fieldExists('background_image', 'threads');
+
         foreach ($threadData as $i => $pair) {
             $title   = $pair[0];
             $body    = $pair[1];
             $slug    = url_title($title, '-', true) ?: 'thread-' . ($i + 1);
             $catId   = $categoryIds[$i % count($categoryIds)];
             $authorId = $userIds[$i % count($userIds)];
-            $this->db->table('threads')->insert([
+            $row = [
                 'category_id'  => $catId,
                 'author_id'    => $authorId,
                 'title'        => $title,
@@ -98,7 +81,21 @@ class ForumSeeder extends Seeder
                 'created_at'   => $now,
                 'updated_at'   => $now,
                 'deleted_at'   => null,
-            ]);
+            ];
+            if ($threadsHasVoteScore) {
+                $row['vote_score'] = 0;
+            }
+            if ($threadsHasEditedAt) {
+                $row['edited_at'] = null;
+            }
+            if ($threadsHasEditedByModerator) {
+                $row['edited_by_moderator'] = false;
+            }
+            if ($threadsHasBackgroundImage) {
+                $row['background_image'] = null;
+            }
+
+            $this->db->table('threads')->insert($row);
             $threadIds[] = $this->db->insertID();
         }
 
@@ -108,8 +105,10 @@ class ForumSeeder extends Seeder
             'https://picsum.photos/seed/thread-bg-2/1200/400',
             'https://picsum.photos/seed/thread-bg-3/1200/400',
         ];
-        foreach (array_slice($threadIds, 0, 3) as $idx => $tid) {
-            $this->db->table('threads')->where('id', $tid)->update(['background_image' => $bgUrls[$idx]]);
+        if ($threadsHasBackgroundImage) {
+            foreach (array_slice($threadIds, 0, 3) as $idx => $tid) {
+                $this->db->table('threads')->where('id', $tid)->update(['background_image' => $bgUrls[$idx]]);
+            }
         }
 
         // 4. Posts
@@ -123,7 +122,12 @@ class ForumSeeder extends Seeder
             $authorId  = $userIds[$i % count($userIds)];
             $body      = $postBodies[$i % count($postBodies)];
             $created   = date('Y-m-d H:i:s', strtotime($now) + $i * 60);
-            $this->db->table('posts')->insert([
+
+            $postsHasVoteScore = $this->db->fieldExists('vote_score', 'posts');
+            $postsHasEditedAt = $this->db->fieldExists('edited_at', 'posts');
+            $postsHasEditedByModerator = $this->db->fieldExists('edited_by_moderator', 'posts');
+
+            $postRow = [
                 'thread_id'  => $threadId,
                 'author_id'  => $authorId,
                 'parent_id'  => null,
@@ -131,7 +135,18 @@ class ForumSeeder extends Seeder
                 'created_at' => $created,
                 'updated_at' => $created,
                 'deleted_at' => null,
-            ]);
+            ];
+            if ($postsHasVoteScore) {
+                $postRow['vote_score'] = 0;
+            }
+            if ($postsHasEditedAt) {
+                $postRow['edited_at'] = null;
+            }
+            if ($postsHasEditedByModerator) {
+                $postRow['edited_by_moderator'] = false;
+            }
+
+            $this->db->table('posts')->insert($postRow);
         }
 
         // 5. Update thread post_count and last_post_at

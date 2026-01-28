@@ -21,7 +21,20 @@
                 <?php endif; ?>
             </div>
             <div class="profile-header__info">
-                <h1 class="profile-header__name"><?= esc($profile && isset($profile['display_name']) && $profile['display_name'] ? $profile['display_name'] : $user['username']) ?></h1>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <h1 class="profile-header__name mb-0"><?= esc($profile && isset($profile['display_name']) && $profile['display_name'] ? $profile['display_name'] : $user['username']) ?></h1>
+                    <?php
+                    $role = $user['role'] ?? 'member';
+                    if ($role !== 'member'):
+                        $roleColors = [
+                            'admin' => 'danger',
+                            'moderator' => 'warning',
+                        ];
+                        $color = $roleColors[$role] ?? 'secondary';
+                    ?>
+                        <span class="badge bg-<?= $color ?>"><?= esc(ucfirst($role)) ?></span>
+                    <?php endif; ?>
+                </div>
                 <p class="profile-header__username">@<?= esc($user['username']) ?></p>
                 <?php if ($profile && isset($profile['bio']) && $profile['bio']): ?>
                     <p class="profile-header__bio"><?= nl2br(esc((string)$profile['bio'])) ?></p>

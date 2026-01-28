@@ -6,8 +6,9 @@ $themeMode = get_theme_mode();
 <html lang="en" data-theme-mode="<?= esc($themeMode) ?>">
 	<head>
 		<meta charset="utf-8">
-		<title><?= esc($title ?? 'Threadline') ?></title>
+		<title><?= 'Threadline' . (isset($title) && $title !== '' && $title !== 'Threadline' ? ' - ' . esc($title) : '') ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="icon" type="image/png" href="<?= base_url('favicon.png') ?>">
 
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,7 +40,7 @@ $themeMode = get_theme_mode();
 		})();
 		</script>
 	</head>
-	<body>
+	<body data-user-id="<?= session()->has('user_id') ? (int) session()->get('user_id') : '' ?>">
 
 		<?= $this->include('partials/header') ?>
 

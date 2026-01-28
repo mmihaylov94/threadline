@@ -5,6 +5,10 @@ $username = $isLoggedIn ? $session->get('username') : null;
 
 $userProfile = null;
 $displayLabel = $username;
+$isModerator = false;
+$isAdmin = false;
+$pendingReportsCount = 0;
+$pendingCategoriesCount = 0;
 if ($isLoggedIn) {
     $profileModel = model(\App\Models\UserProfileModel::class);
     $userProfile = $profileModel->findByUserId($session->get('user_id'));
@@ -12,6 +16,24 @@ if ($isLoggedIn) {
         $dn = trim((string) $userProfile['display_name']);
         if ($dn !== '') {
             $displayLabel = $dn;
+        }
+    }
+    
+    // Check if user is moderator/admin
+    $userModel = model(\App\Models\UserModel::class);
+    $user = $userModel->find($session->get('user_id'));
+    if ($user) {
+        $role = $user['role'] ?? 'member';
+        $isModerator = in_array($role, ['moderator', 'admin']);
+        $isAdmin = ($role === 'admin');
+        
+        // Get pending counts for moderators
+        if ($isModerator) {
+            $reportModel = model(\App\Models\ReportModel::class);
+            $pendingReportsCount = $reportModel->where('status', 'pending')->countAllResults();
+            
+            $categoryModel = model(\App\Models\CategoryModel::class);
+            $pendingCategoriesCount = $categoryModel->where('status', 'pending')->countAllResults();
         }
     }
 }
@@ -39,15 +61,28 @@ if ($isLoggedIn) {
                     <li class="nav-item">
                         <a class="nav-link" href="<?= base_url('threads') ?>">Threads</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<?= base_url('/') ?>#moderation">Moderation</a>
-                    </li>
+                    <?php if ($isModerator): ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('moderation') ?>">
+                                Moderation
+                                <?php 
+                                $totalPending = $pendingReportsCount + $pendingCategoriesCount;
+                                if ($totalPending > 0): ?>
+                                    <span class="badge bg-danger ms-1"><?= $totalPending ?></span>
+                                <?php endif; ?>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                    <?php if ($isAdmin): ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('moderation/users') ?>">User Management</a>
+                        </li>
+                    <?php endif; ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="resourcesDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">Resources</a>
                         <ul class="dropdown-menu" aria-labelledby="resourcesDropdown">
                             <li><a class="dropdown-item" href="<?= base_url('guidelines') ?>">Guidelines</a></li>
-                            <li><a class="dropdown-item" href="<?= base_url('/') ?>#">Dashboard</a></li>
                             <li><a class="dropdown-item" href="<?= base_url('support') ?>">Support</a></li>
                         </ul>
                     </li>
@@ -71,7 +106,6 @@ if ($isLoggedIn) {
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="<?= base_url('users/' . esc($username)) ?>">Profile</a></li>
                                 <li><a class="dropdown-item" href="<?= base_url('settings') ?>">Settings</a></li>
-                                <li><a class="dropdown-item" href="<?= base_url('notifications') ?>">Notifications</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="<?= base_url('logout') ?>">Logout</a></li>
                             </ul>

@@ -71,4 +71,46 @@ class Services extends BaseService
 
         return new \App\Services\RecaptchaService();
     }
+
+    /**
+     * The AuditLogService class
+     *
+     * @return \App\Services\AuditLogService
+     */
+    public static function auditLog(bool $getShared = true)
+    {
+        if ($getShared) {
+            return static::getSharedInstance('auditLog');
+        }
+
+        return new \App\Services\AuditLogService();
+    }
+
+    /**
+     * The ModerationService class
+     *
+     * @return \App\Services\ModerationService
+     */
+    public static function moderation(bool $getShared = true)
+    {
+        if ($getShared) {
+            return static::getSharedInstance('moderation');
+        }
+
+        return new \App\Services\ModerationService();
+    }
+
+    /**
+     * The AuthorizationService class
+     *
+     * @return \App\Services\AuthorizationService
+     */
+    public static function authorization(bool $getShared = true)
+    {
+        if ($getShared) {
+            return static::getSharedInstance('authorization');
+        }
+
+        return new \App\Services\AuthorizationService();
+    }
 }

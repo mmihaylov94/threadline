@@ -13,6 +13,7 @@ class UserModel extends Model
         'email',
         'email_verified_at',
         'status',
+        'role',
         'last_login_at',
     ];
 

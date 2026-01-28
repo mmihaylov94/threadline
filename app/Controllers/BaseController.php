@@ -93,4 +93,96 @@ abstract class BaseController extends Controller
 
         return 'auto';
     }
+
+    /**
+     * Get current user's role
+     *
+     * @return string|null Role name or null if not logged in
+     */
+    protected function getCurrentUserRole(): ?string
+    {
+        if (!$this->isLoggedIn()) {
+            return null;
+        }
+
+        $user = $this->getCurrentUser();
+        return $user['role'] ?? 'member';
+    }
+
+    /**
+     * Check if current user has a specific role
+     *
+     * @param string $role
+     * @return bool
+     */
+    protected function hasRole(string $role): bool
+    {
+        $authorizationService = service('authorization');
+        return $authorizationService->hasRole($this->getCurrentUserId(), $role);
+    }
+
+    /**
+     * Check if current user is an admin
+     *
+     * @return bool
+     */
+    protected function isAdmin(): bool
+    {
+        $authorizationService = service('authorization');
+        return $authorizationService->isAdmin($this->getCurrentUserId());
+    }
+
+    /**
+     * Check if current user is a moderator (includes admins)
+     *
+     * @return bool
+     */
+    protected function isModerator(): bool
+    {
+        $authorizationService = service('authorization');
+        return $authorizationService->isModerator($this->getCurrentUserId());
+    }
+
+    /**
+     * Require a specific role, redirect if user doesn't have it
+     *
+     * @param string $role
+     * @return void
+     */
+    protected function requireRole(string $role): void
+    {
+        if (!$this->hasRole($role)) {
+            $this->session->setFlashdata('error', 'Access denied. You do not have permission to access this page.');
+            redirect()->to('/')->send();
+            exit;
+        }
+    }
+
+    /**
+     * Require admin role
+     *
+     * @return void
+     */
+    protected function requireAdmin(): void
+    {
+        if (!$this->isAdmin()) {
+            $this->session->setFlashdata('error', 'Access denied. Admin role required.');
+            redirect()->to('/')->send();
+            exit;
+        }
+    }
+
+    /**
+     * Require moderator role (includes admins)
+     *
+     * @return void
+     */
+    protected function requireModerator(): void
+    {
+        if (!$this->isModerator()) {
+            $this->session->setFlashdata('error', 'Access denied. Moderator role required.');
+            redirect()->to('/')->send();
+            exit;
+        }
+    }
 }

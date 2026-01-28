@@ -30,13 +30,24 @@ Threadline is a **portfolio-grade application** that demonstrates:
   - Optional social login (Google OAuth)
 
 - **Forum**
-  - Category browsing
-  - Thread creation + editing (author-only)
-  - Replies
+  - Category browsing (only approved categories visible to regular users)
+  - Category creation with moderation workflow
+    - Regular users can submit category requests (pending approval)
+    - Moderators/admins can create categories that are immediately approved
+    - Category requests require moderator/admin approval before becoming public
+  - Thread creation
+  - Thread editing/deletion (author, or moderator/admin)
+  - Replies with edit/delete (author, or moderator/admin)
+  - Moderator/admin edits are visibly marked in the UI
   - Pagination for threads (10 per page) and replies; custom thread pagination (5 page numbers + prev/next chevrons)
   - Thread search (title and body, case-insensitive)
+  - Thread sorting (newest, most replies, latest activity, top votes)
+  - Thread and reply voting (upvote/downvote with toggle behavior, vote scores displayed)
+  - Favorite threads (yellow star icon, toggleable)
+  - Right sidebar with recently viewed threads (localStorage-based) and favorite threads (collapsible, hidden on mobile, sticky on scroll)
   - Optional thread background images
   - Author names and avatars (display name when set, else username) — clickable to user profiles
+  - Content reporting system (report threads/replies with guideline violation selection)
 
 - **Profiles & Settings**
   - Public user profiles
@@ -50,26 +61,33 @@ Threadline is a **portfolio-grade application** that demonstrates:
   - Header shows user display name or username; portfolio disclaimer banner
   - Cookie consent banner (Accept, Learn more → Privacy #cookies)
   - Newsletter pop-up for logged-out users (corner, dismissible)
+  - Custom 404 error page with navigation back to home
 
 - **Support & Legal**
   - Support page (`/support`) — FAQ + Get in touch (e.g. Instagram)
   - Privacy Policy (`/privacy`), Terms of Service (`/terms`), Community Guidelines (`/guidelines`)
   - Newsletter backend: `newsletter_subscribers` table, validation, pop-up form + settings sync
 
+- **Moderation & Administration**
+  - Role-based access control (Admin / Moderator / Member)
+  - Moderation dashboard with pending reports and categories count badges
+  - Report queue management (view, review, resolve, dismiss, escalate)
+  - Category moderation workflow
+    - Review pending category requests
+    - Approve or reject categories with optional rejection reasons
+    - View approved/rejected categories with filters
+    - Moderators/admins can create categories without review
+  - Audit logs tracking all moderation actions and system changes
+  - User management (admin only) — assign roles, enable/disable users, view user status
+    - Admins cannot change their own role or disable their own account
+  - Content moderation actions (delete threads/posts by moderators)
+  - Report review workflow with resolution notes and action tracking
+
 ### Planned / Not Yet Implemented
 
-- Role-based access control (Admin / Moderator / Member)
-- Moderation dashboards, reports, queues, audit logs
 - Full notifications system (delivery + UI)
-- Dashboard, About, Notifications (placeholder links exist)
-- Favorite threads
-- Edit replies
-- Delete replies
-- Delete posts
-- **Content reporting** — report threads or posts for moderation (Guidelines reference “reporting tools when implemented”)
-- **User blocking** — block other users (hide their content, restrict interactions)
-- **Thread sorting** — user-selectable sort (e.g. newest, most replies, latest activity)
-- **Draft threads / replies** — save drafts before posting (local or server-side)
+- Draft threads / replies — save drafts before posting (local or server-side)
+- User blocking — block other users (hide their content, restrict interactions)
 - User Ranking - based on their activity (number of threads and replies they post)
 
 ### Security
@@ -100,8 +118,9 @@ Routes below reflect `app/Config/Routes.php`.
 - `/reset-password/{token}` (GET/POST)
 - `/auth/google` (GET)
 - `/auth/google/callback` (GET)
-- `/categories` (GET)
-- `/threads` (GET) — list (search, category filter, pagination)
+- `/categories` (GET) — Browse approved categories
+- `/categories/create` (GET/POST) — Create category request (authenticated users)
+- `/threads` (GET) — list (search, category filter, pagination, sorting)
 - `/threads/{slug}` (GET)
 - `/threads/{slug}/page/{n}` (GET)
 - `/users/{username}` (GET)
@@ -110,11 +129,36 @@ Routes below reflect `app/Config/Routes.php`.
 
 - `/threads/create` (GET/POST)
 - `/threads/{id}/edit` (GET/POST)
+- `/threads/{id}/delete` (POST) — delete thread (author, or moderator/admin)
 - `/threads/{slug}/reply` (POST)
+- `/threads/{slug}/favorite` (POST) — toggle favorite status
+- `/threads/{slug}/report` (POST) — report thread
+- `/threads/{slug}/vote` (POST) — vote on thread (upvote/downvote/toggle)
+- `/posts/{id}/edit` (GET/POST) — edit reply (author, or moderator/admin)
+- `/posts/{id}/delete` (POST) — delete reply (author, or moderator/admin)
+- `/posts/{id}/report` (POST) — report reply
+- `/posts/{id}/vote` (POST) — vote on reply (upvote/downvote/toggle)
 - `/settings` (GET)
 - `/settings/profile` (POST)
 - `/settings/preferences` (POST)
 - `/settings/password` (POST)
+
+### Moderators & Admins
+
+- `/moderation` (GET) — Moderation dashboard
+- `/moderation/reports` (GET) — Reports list with filtering
+- `/moderation/reports/(:num)` (GET) — View single report
+- `/moderation/reports/(:num)/review` (POST) — Review report (resolve/dismiss/escalate)
+- `/moderation/queue` (GET) — Moderation queue (pending reports)
+- `/moderation/audit-logs` (GET) — Audit logs with filtering
+- `/moderation/users` (GET) — User management (admin only)
+- `/moderation/users/(:num)/role` (POST) — Assign role to user (admin only)
+- `/moderation/users/(:num)/status` (POST) — Enable/disable user (admin only)
+- `/moderation/categories` (GET) — Category moderation list (moderator/admin)
+- `/moderation/categories/(:num)/approve` (POST) — Approve category (moderator/admin)
+- `/moderation/categories/(:num)/reject` (POST) — Reject category (moderator/admin)
+- `/threads/(:num)/moderate` (POST) — Moderate thread (moderator/admin)
+- `/posts/(:num)/moderate` (POST) — Moderate post (moderator/admin)
 
 ---
 
