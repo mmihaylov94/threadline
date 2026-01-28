@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\NewsletterSubscriberModel;
 use App\Models\UserCredentialModel;
 use App\Models\UserModel;
 use App\Models\UserProfileModel;
@@ -170,6 +171,8 @@ class SettingsController extends BaseController
         ];
 
         if ($this->profileModel->setProfile($userId, $data)) {
+            $this->syncNewsletterSubscription($userId, $data['newsletter_subscription']);
+
             return redirect()->to('/settings')->with('success', 'Settings updated successfully.');
         }
 
@@ -231,6 +234,30 @@ class SettingsController extends BaseController
         return redirect()->back()
             ->withInput()
             ->with('error', 'Failed to change password. Please try again.');
+    }
+
+    /**
+     * Sync newsletter_subscribers with the user's newsletter preference.
+     * Subscribe (add/update) when '1', unsubscribe (remove) when '0'.
+     */
+    protected function syncNewsletterSubscription(int $userId, string $newsletterSubscription): void
+    {
+        $user = $this->userModel->find($userId);
+        $email = $user['email'] ?? null;
+        if ($email === null || $email === '') {
+            return;
+        }
+
+        try {
+            $model = model(NewsletterSubscriberModel::class);
+            if ($newsletterSubscription === '1') {
+                $model->subscribe($email, 'settings');
+            } else {
+                $model->unsubscribe($email);
+            }
+        } catch (\Throwable $e) {
+            log_message('error', 'Newsletter sync failed for user ' . $userId . ': ' . $e->getMessage());
+        }
     }
 
     /**

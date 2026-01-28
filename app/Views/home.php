@@ -7,18 +7,22 @@
 <?= $this->section('content') ?>
 
 <?php
-$isLoggedIn = session()->has('user_id');
+$isLoggedIn       = session()->has('user_id');
+$newsletterError  = session()->getFlashdata('newsletter_error');
 if (session()->getFlashdata('success')):
 ?>
-<div class="container py-3">
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <?= esc(session()->getFlashdata('success')) ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+<div class="container py-3 alert alert-success alert-dismissible fade show" role="alert">
+    <?= esc(session()->getFlashdata('success')) ?>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<?php endif; ?>
+<?php if ($newsletterError): ?>
+<div class="container py-3 alert alert-danger alert-dismissible fade show" role="alert">
+    <?= esc($newsletterError) ?>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 <?php endif; ?>
 
-<!-- Hero -->
 <section class="home-hero">
     <div class="home-hero__card container">
         <div class="home-hero__inner">
@@ -34,7 +38,6 @@ if (session()->getFlashdata('success')):
     </div>
 </section>
 
-<!-- Recent -->
 <section class="home-recent" id="recent">
     <div class="container">
         <div class="home-recent__head">
@@ -48,7 +51,7 @@ if (session()->getFlashdata('success')):
         <div class="home-recent__cards">
             <?php foreach ($recentThreads as $t): ?>
             <article class="home-recent-card">
-                <img class="home-recent-card__img" src="<?= esc($t['img']) ?>" alt="">
+                <img class="home-recent-card__img" src="<?= esc($t['img']) ?>" alt="<?= esc($t['title'] ?? '') ?>">
                 <div class="home-recent-card__body">
                     <div class="home-recent-card__meta">
                         <span class="home-recent-card__cat"><?= esc($t['category']) ?></span>
@@ -64,7 +67,6 @@ if (session()->getFlashdata('success')):
     </div>
 </section>
 
-<!-- Activity + Stats -->
 <section class="home-activity">
     <div class="container">
         <div class="home-activity__grid">
@@ -98,7 +100,6 @@ if (session()->getFlashdata('success')):
     </div>
 </section>
 
-<!-- Safety -->
 <section class="home-safety" id="moderation">
     <div class="container">
         <h2 class="home-safety__title">Tools built for healthy communities</h2>
@@ -108,21 +109,20 @@ if (session()->getFlashdata('success')):
                 <div class="home-safety-card__label">Reporting</div>
                 <h3 class="home-safety-card__title">Flag content that breaks community guidelines</h3>
                 <p class="home-safety-card__desc">Members can report posts and comments directly to moderators with context and reasoning.</p>
-                <a class="home-safety-card__link" href="<?= base_url('/') ?>#">Learn &gt;</a>
-                <img class="home-safety-card__img" src="https://picsum.photos/seed/threadline-safety1/800/400" alt="">
+                <a class="home-safety-card__link" href="<?= base_url('support') ?>#faq">Learn &gt;</a>
+                <img class="home-safety-card__img" src="https://picsum.photos/seed/threadline-safety1/800/400" alt="Reporting content">
             </div>
             <div class="home-safety-card">
                 <div class="home-safety-card__label">Moderation</div>
                 <h3 class="home-safety-card__title">Dashboard for reviewing and managing reported content</h3>
                 <p class="home-safety-card__desc">Moderators have a dedicated space to review reports, approve or remove content, and communicate decisions.</p>
-                <a class="home-safety-card__link" href="<?= base_url('/') ?>#">Access &gt;</a>
-                <img class="home-safety-card__img" src="https://picsum.photos/seed/threadline-safety2/800/400" alt="">
+                <a class="home-safety-card__link" href="<?= base_url('support') ?>#faq">Access &gt;</a>
+                <img class="home-safety-card__img" src="https://picsum.photos/seed/threadline-safety2/800/400" alt="Moderation dashboard">
             </div>
         </div>
     </div>
 </section>
 
-<!-- CTA: Ready to join -->
 <section class="home-cta">
     <div class="container">
         <div class="home-cta__banner">
@@ -142,7 +142,6 @@ if (session()->getFlashdata('success')):
     </div>
 </section>
 
-<!-- Testimonials -->
 <section class="home-testimonials">
     <div class="container">
         <h2 class="home-testimonials__title">What members say</h2>
@@ -153,7 +152,7 @@ if (session()->getFlashdata('success')):
                 <div class="home-testimonial-card__stars">★★★★★</div>
                 <p class="home-testimonial-card__quote"><?= esc($t['quote']) ?></p>
                 <div class="home-testimonial-card__author">
-                    <img class="home-testimonial-card__avatar" src="<?= esc($t['avatar']) ?>" alt="">
+                    <img class="home-testimonial-card__avatar" src="<?= esc($t['avatar']) ?>" alt="<?= esc($t['name'] ?? '') ?>">
                     <div>
                         <div class="home-testimonial-card__name"><?= esc($t['name']) ?></div>
                         <div class="home-testimonial-card__role"><?= esc($t['role']) ?></div>
@@ -170,18 +169,56 @@ if (session()->getFlashdata('success')):
     </div>
 </section>
 
-<!-- Newsletter -->
-<section class="home-newsletter">
-    <div class="container">
-        <h2 class="home-newsletter__title">Stay in the loop</h2>
-        <p class="home-newsletter__sub">Get updates on new discussions and community news delivered to your inbox</p>
-        <form class="home-newsletter__form" action="<?= base_url('newsletter') ?>" method="post">
-            <?= csrf_field() ?>
-            <input type="email" name="newsletter_email" placeholder="Enter email" aria-label="Email for newsletter">
-            <button type="submit" class="btn btn-subscribe">Subscribe</button>
-        </form>
-        <p class="home-newsletter__consent">By subscribing you agree to receive updates from Threadline</p>
-    </div>
-</section>
+<?php if (!$isLoggedIn): ?>
+<div id="newsletter-popup" class="newsletter-popup<?= ! empty($newsletterError) ? '' : ' newsletter-popup--hidden' ?>" role="dialog" aria-label="Newsletter signup">
+    <button type="button" class="newsletter-popup__close" aria-label="Close newsletter popup">&times;</button>
+    <h3 class="newsletter-popup__title">Stay in the loop</h3>
+    <p class="newsletter-popup__sub">Get updates on new discussions and community news delivered to your inbox.</p>
+    <?php if (! empty($newsletterError)): ?>
+    <p class="newsletter-popup__error"><?= esc($newsletterError) ?></p>
+    <?php endif; ?>
+    <form class="newsletter-popup__form" action="<?= base_url('newsletter') ?>" method="post">
+        <?= csrf_field() ?>
+        <input type="email" name="newsletter_email" placeholder="Enter your email" aria-label="Email for newsletter" class="newsletter-popup__input" value="<?= esc(old('newsletter_email')) ?>">
+        <button type="submit" class="newsletter-popup__btn">Subscribe</button>
+    </form>
+    <p class="newsletter-popup__consent">By subscribing you agree to receive updates from Threadline.</p>
+</div>
+<?php endif; ?>
 
 <?= $this->endSection() ?>
+
+<?php if (!$isLoggedIn): ?>
+<?= $this->section('scripts') ?>
+<script>
+(function() {
+    var STORAGE_KEY = 'threadline_newsletter_popup_dismissed';
+    var DELAY_MS = 2500;
+
+    function getEl(id) { return document.getElementById(id); }
+    function hide() {
+        var popup = getEl('newsletter-popup');
+        if (popup) {
+            popup.classList.add('newsletter-popup--hidden');
+            try { sessionStorage.setItem(STORAGE_KEY, '1'); } catch (e) {}
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var popup = getEl('newsletter-popup');
+        if (!popup) return;
+        try {
+            if (sessionStorage.getItem(STORAGE_KEY)) return;
+        } catch (e) {}
+
+        var closeBtn = popup.querySelector('.newsletter-popup__close');
+        if (closeBtn) closeBtn.addEventListener('click', hide);
+
+        var timer = setTimeout(function() {
+            popup.classList.remove('newsletter-popup--hidden');
+        }, DELAY_MS);
+    });
+})();
+</script>
+<?= $this->endSection() ?>
+<?php endif; ?>

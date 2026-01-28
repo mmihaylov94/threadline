@@ -141,7 +141,6 @@
                                     <label class="form-check-label" for="theme_auto">Auto (follow system)</label>
                                 </div>
                             </div>
-                            <small class="form-text text-muted">Theme mode selection will be implemented in a future update.</small>
                         </div>
 
                         <hr class="my-4">

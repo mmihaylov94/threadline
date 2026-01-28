@@ -6,7 +6,6 @@
 
 <?= $this->section('content') ?>
 
-<!-- Profile Header Section -->
 <section class="profile-header">
     <div class="container">
         <div class="profile-header__inner">
@@ -31,7 +30,7 @@
                     <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" style="vertical-align: middle;">
                         <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
                     </svg>
-                    Member since <?= $joinDate->format('F Y') ?>
+                    Member since <?= esc($joinDate->format('F Y')) ?>
                 </p>
                 <?php if ($isOwnProfile): ?>
                     <a href="<?= base_url('settings') ?>" class="btn btn-profile-edit">Edit Profile</a>
@@ -41,7 +40,6 @@
     </div>
 </section>
 
-<!-- Statistics Section -->
 <section class="profile-stats">
     <div class="container">
         <div class="profile-stats__label">Statistics</div>
@@ -56,14 +54,13 @@
                 <div class="profile-stat-card__label">Posts</div>
             </div>
             <div class="profile-stat-card">
-                <div class="profile-stat-card__value"><?= $joinDate->format('M Y') ?></div>
+                <div class="profile-stat-card__value"><?= esc($joinDate->format('M Y')) ?></div>
                 <div class="profile-stat-card__label">Member Since</div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Recent Activity Section -->
 <section class="profile-activity">
     <div class="container">
         <div class="profile-activity__label">Activity</div>
@@ -79,7 +76,6 @@
         </ul>
 
         <div class="tab-content profile-activity__content" id="activityTabContent">
-            <!-- Threads Tab -->
             <div class="tab-pane fade show active" id="threads" role="tabpanel" aria-labelledby="threads-tab">
                 <?php if (empty($recentThreads)): ?>
                     <p class="profile-activity__empty">No threads yet.</p>
@@ -99,7 +95,6 @@
                 <?php endif; ?>
             </div>
 
-            <!-- Posts Tab -->
             <div class="tab-pane fade" id="posts" role="tabpanel" aria-labelledby="posts-tab">
                 <?php if (empty($recentPosts)): ?>
                     <p class="profile-activity__empty">No posts yet.</p>
@@ -115,7 +110,7 @@
                                     <?php
                                     $body = (string)($post['body'] ?? '');
                                     $excerpt = isHtmlContent($body) ? strip_tags($body) : $body;
-                                    echo esc(substr($excerpt, 0, 150)) . (strlen($excerpt) > 150 ? '...' : '');
+                                    echo esc(mb_substr($excerpt, 0, 150)) . (mb_strlen($excerpt) > 150 ? '...' : '');
                                     ?>
                                 </p>
                                 <a class="profile-activity-card__link" href="<?= base_url('threads/' . esc($post['thread_slug'])) ?>">View thread &gt;</a>

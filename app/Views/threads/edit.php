@@ -40,7 +40,7 @@
                 </div>
             <?php endif; ?>
 
-            <?= form_open_multipart('threads/' . $thread['id'] . '/edit') ?>
+            <?= form_open_multipart('threads/' . (int) $thread['id'] . '/edit') ?>
             <?= csrf_field() ?>
 
             <div class="mb-3">

@@ -207,6 +207,8 @@
 
 .auth-card .ql-container.ql-snow {
   border: 1px solid var(--border-color);
+  border-top: none;
+  border-radius: 0 0 0.375rem 0.375rem;
   background-color: var(--bg-secondary);
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
@@ -217,11 +219,6 @@
   border-radius: 0.375rem 0.375rem 0 0;
   background: var(--bg-primary);
   transition: border-color 0.2s ease, background-color 0.2s ease;
-}
-
-.auth-card .ql-container.ql-snow {
-  border-top: none;
-  border-radius: 0 0 0.375rem 0.375rem;
 }
 
 .auth-card .ql-editor {

@@ -27,8 +27,17 @@
         </div>
     <?php endif; ?>
 
+    <form method="get" action="<?= base_url('threads') ?>" class="forum-search mb-4">
+        <?php if (isset($filterCategory) && $filterCategory): ?>
+            <input type="hidden" name="category" value="<?= esc($filterCategory['slug']) ?>">
+        <?php endif; ?>
+        <input type="search" name="q" class="forum-search__input" value="<?= esc($searchQuery ?? '') ?>"
+            placeholder="Search threads by title or description…" aria-label="Search threads">
+        <button type="submit" class="btn btn-forum-primary forum-search__btn">Search</button>
+    </form>
+
     <?php if (empty($threads)): ?>
-        <p class="forum-empty">No threads yet.</p>
+        <p class="forum-empty"><?= !empty($searchQuery) ? 'No threads match your search.' : 'No threads yet.' ?></p>
     <?php else: ?>
         <div class="forum-thread-cards">
             <?php foreach ($threads as $t): ?>
@@ -40,7 +49,7 @@
                 $excerpt = $body !== '' ? (mb_strlen($body) > 120 ? mb_substr($body, 0, 117) . '...' : $body) : '';
                 ?>
                 <article class="forum-thread-card">
-                    <img class="forum-thread-card__img" src="<?= esc($imgUrl) ?>" alt="">
+                    <img class="forum-thread-card__img" src="<?= esc($imgUrl) ?>" alt="<?= esc($t['title'] ?? '') ?>">
                     <div class="forum-thread-card__body">
                         <div class="forum-thread-card__meta">
                             <a class="forum-thread-card__cat" href="<?= base_url('threads?category=' . urlencode($t['category_slug'] ?? '')) ?>"><?= esc($t['category_name'] ?? '') ?></a>
@@ -53,7 +62,28 @@
                             <p class="forum-thread-card__desc"><?= esc($excerpt) ?></p>
                         <?php endif; ?>
                         <p class="forum-thread-card__footer">
-                            <?= esc($t['author_username'] ?? '') ?> · <?= (int) ($t['post_count'] ?? 0) ?> <?= (int) ($t['post_count'] ?? 0) === 1 ? 'reply' : 'replies' ?>
+                            <?php
+                            $authorUsername = $t['author_username'] ?? '';
+                            $authorDn = trim((string) ($t['author_display_name'] ?? ''));
+                            $authorLabel = $authorDn !== '' ? $authorDn : $authorUsername;
+                            $authorAvatar = isset($t['author_avatar_path']) && trim((string) $t['author_avatar_path']) !== '' ? trim((string) $t['author_avatar_path']) : null;
+                            ?>
+                            <span class="forum-thread-card__author">
+                                <?php if ($authorUsername !== ''): ?>
+                                    <a href="<?= base_url('users/' . esc($authorUsername)) ?>" class="forum-thread-card__author-link">
+                                        <?php if ($authorAvatar): ?>
+                                            <img src="<?= esc($authorAvatar) ?>" alt="" class="forum-thread-card__author-avatar" width="20" height="20">
+                                        <?php endif; ?>
+                                        <?= esc($authorLabel) ?>
+                                    </a>
+                                <?php else: ?>
+                                    <?php if ($authorAvatar): ?>
+                                        <img src="<?= esc($authorAvatar) ?>" alt="" class="forum-thread-card__author-avatar" width="20" height="20">
+                                    <?php endif; ?>
+                                    <span><?= esc($authorLabel) ?></span>
+                                <?php endif; ?>
+                            </span>
+                            <span class="forum-thread-card__footer-extra">· <?= (int) ($t['post_count'] ?? 0) ?> <?= (int) ($t['post_count'] ?? 0) === 1 ? 'reply' : 'replies' ?></span>
                         </p>
                         <a class="forum-thread-card__link" href="<?= base_url('threads/' . esc($t['slug'])) ?>">Read more &gt;</a>
                     </div>
@@ -62,8 +92,8 @@
         </div>
     <?php endif; ?>
 
-    <?php if (isset($pager) && $pager->getPageCount() > 1): ?>
-        <nav class="forum-pagination"><?= $pager->links() ?></nav>
+    <?php if (isset($pager) && $pager->getPageCount('default') > 1): ?>
+        <nav class="forum-pagination"><?= $pager->links('default', 'custom_threads') ?></nav>
     <?php endif; ?>
 </section>
 

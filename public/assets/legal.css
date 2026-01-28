@@ -1,0 +1,112 @@
+/* Legal pages (privacy policy, terms, etc.) */
+.legal-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding-bottom: 2rem;
+}
+
+.legal-page__header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  transition: border-color 0.2s ease;
+}
+
+.legal-page__title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.legal-page__updated {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin: 0;
+  transition: color 0.2s ease;
+}
+
+.legal-page__intro {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  margin: 0 0 2rem;
+  transition: color 0.2s ease;
+}
+
+.legal-page__body {
+  color: var(--text-primary);
+  transition: color 0.2s ease;
+}
+
+.legal-page__section {
+  margin-bottom: 2rem;
+}
+
+#cookies {
+  scroll-margin-top: 100px;
+}
+
+.legal-page__section:last-child {
+  margin-bottom: 0;
+}
+
+.legal-page__h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 0.75rem;
+  transition: color 0.2s ease;
+}
+
+.legal-page__h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 1.25rem 0 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.legal-page__section p {
+  margin: 0 0 0.75rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  transition: color 0.2s ease;
+}
+
+.legal-page__section p:last-child {
+  margin-bottom: 0;
+}
+
+.legal-page__section ul {
+  margin: 0 0 0.75rem;
+  padding-left: 1.5rem;
+}
+
+.legal-page__section ul:last-child {
+  margin-bottom: 0;
+}
+
+.legal-page__section li {
+  margin-bottom: 0.35rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  transition: color 0.2s ease;
+}
+
+.legal-page__section ul ul {
+  margin: 0.35rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.legal-page__body a {
+  color: #3B82F6;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.legal-page__body a:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}

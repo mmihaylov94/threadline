@@ -276,7 +276,7 @@
 .settings-page {
   padding: 4rem 1.5rem;
   background: var(--bg-primary);
-  min-height: calc(100vh - 59px);
+  min-height: calc(100vh - 96px);
   transition: background-color 0.2s ease;
 }
 .settings-page .container {
@@ -469,9 +469,6 @@
 }
 .settings-card #password-match-msg.text-danger {
   color: #dc2626;
-}
-.settings-card .form-check-switch {
-  padding-left: 2.5rem;
 }
 .settings-card .form-check-input[type="checkbox"] {
   width: 2.5rem;

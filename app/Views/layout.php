@@ -57,6 +57,13 @@ $themeMode = get_theme_mode();
 		<?= $this->include('partials/footer') ?>
 		<?php endif; ?>
 
+		<div id="cookie-banner" class="cookie-banner cookie-banner--hidden" role="dialog" aria-label="Cookie consent">
+			<div class="cookie-banner__inner container">
+				<p class="cookie-banner__text">We use cookies for session management, authentication, security, and theme preferences. <a href="<?= base_url('privacy') ?>#cookies">Learn more</a>.</p>
+				<button type="button" class="cookie-banner__btn" id="cookie-banner-accept">Accept</button>
+			</div>
+		</div>
+
 		<script src="<?= base_url('assets/theme.js') ?>"></script>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>

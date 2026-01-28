@@ -28,7 +28,11 @@ class ThreadsController extends BaseController
             }
         }
 
-        $result = $threadModel->getRecentPaginated(10, $categorySlug);
+        $searchQuery = $this->request->getGet('q');
+        $searchQuery = is_string($searchQuery) ? trim($searchQuery) : '';
+        $searchQuery = $searchQuery !== '' ? $searchQuery : null;
+
+        $result = $threadModel->getRecentPaginated(10, $categorySlug, $searchQuery);
         $categories = $categoryModel->getAllForSelect();
 
         return view('threads/list', [
@@ -37,6 +41,7 @@ class ThreadsController extends BaseController
             'pager'          => $result['pager'],
             'categories'     => $categories,
             'filterCategory' => $filterCategory,
+            'searchQuery'    => $searchQuery,
         ]);
     }
 

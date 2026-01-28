@@ -11,6 +11,11 @@ $routes->post('newsletter', 'HomeController::newsletter');
 // Support (public)
 $routes->get('support', 'SupportController::index');
 
+// Legal (public)
+$routes->get('privacy', 'LegalController::privacy');
+$routes->get('terms', 'LegalController::terms');
+$routes->get('guidelines', 'LegalController::guidelines');
+
 // Authentication routes
 $routes->group('', ['filter' => 'guest'], static function ($routes) {
     $routes->match(['GET', 'POST'], 'login', 'AuthController::login');

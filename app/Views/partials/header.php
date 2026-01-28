@@ -4,12 +4,24 @@ $isLoggedIn = $session->has('user_id');
 $username = $isLoggedIn ? $session->get('username') : null;
 
 $userProfile = null;
+$displayLabel = $username;
 if ($isLoggedIn) {
     $profileModel = model(\App\Models\UserProfileModel::class);
     $userProfile = $profileModel->findByUserId($session->get('user_id'));
+    if ($userProfile && isset($userProfile['display_name'])) {
+        $dn = trim((string) $userProfile['display_name']);
+        if ($dn !== '') {
+            $displayLabel = $dn;
+        }
+    }
 }
 ?>
 <header class="threadline-header">
+    <div class="header-disclaimer">
+        <div class="container">
+            <p class="header-disclaimer__text">Threadline is a <strong>portfolio project</strong>, not a commercial service. No uptime or data guarantees. Use at your own discretion.</p>
+        </div>
+    </div>
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
             <a class="navbar-brand" href="<?= base_url('/') ?>">Threadline</a>
@@ -34,9 +46,9 @@ if ($isLoggedIn) {
                         <a class="nav-link dropdown-toggle" href="#" id="resourcesDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">Resources</a>
                         <ul class="dropdown-menu" aria-labelledby="resourcesDropdown">
-                            <li><a class="dropdown-item" href="<?= base_url('support') ?>#faq">Guidelines</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url('guidelines') ?>">Guidelines</a></li>
                             <li><a class="dropdown-item" href="<?= base_url('/') ?>#">Dashboard</a></li>
-                            <li><a class="dropdown-item" href="<?= base_url('support') ?>#get-in-touch">Support</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url('support') ?>">Support</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -47,14 +59,14 @@ if ($isLoggedIn) {
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 <?php if ($userProfile && isset($userProfile['avatar_path']) && $userProfile['avatar_path']): ?>
-                                    <img src="<?= esc($userProfile['avatar_path']) ?>" alt="<?= esc($username) ?>"
+                                    <img src="<?= esc($userProfile['avatar_path']) ?>" alt="<?= esc($displayLabel) ?>"
                                         class="rounded-circle me-1" width="24" height="24">
                                 <?php else: ?>
                                     <svg width="20" height="20" fill="currentColor" class="me-1" viewBox="0 0 16 16">
                                         <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
                                     </svg>
                                 <?php endif; ?>
-                                <?= esc($username) ?>
+                                <?= esc($displayLabel) ?>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="<?= base_url('users/' . esc($username)) ?>">Profile</a></li>

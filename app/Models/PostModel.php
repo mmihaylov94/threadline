@@ -35,8 +35,9 @@ class PostModel extends Model
      */
     public function getPaginatedByThread(int $threadId, int $perPage = 15, ?int $page = null): array
     {
-        $posts = $this->select('posts.*, users.username as author_username')
+        $posts = $this->select('posts.*, users.username as author_username, user_profiles.display_name as author_display_name, user_profiles.avatar_path as author_avatar_path')
             ->join('users', 'users.id = posts.author_id')
+            ->join('user_profiles', 'user_profiles.user_id = users.id', 'left')
             ->where('posts.thread_id', $threadId)
             ->orderBy('posts.created_at', 'ASC')
             ->paginate($perPage, 'default', $page);

@@ -2,10 +2,13 @@
 
 namespace App\Controllers;
 
+use App\Models\NewsletterSubscriberModel;
 use App\Models\PostModel;
 use App\Models\ThreadModel;
 use App\Models\UserModel;
+use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\I18n\Time;
+use Config\Services;
 
 class HomeController extends BaseController
 {
@@ -34,9 +37,38 @@ class HomeController extends BaseController
         ]);
     }
 
-    public function newsletter()
+    public function newsletter(): RedirectResponse
     {
-        $this->request->getPost('newsletter_email');
+        $validation = Services::validation();
+        $validation->setRules([
+            'newsletter_email' => 'required|valid_email|max_length[255]',
+        ]);
+        $validation->setMessages([
+            'newsletter_email' => [
+                'required'   => 'Please enter your email address.',
+                'valid_email' => 'Please provide a valid email address.',
+                'max_length'  => 'Email address is too long.',
+            ],
+        ]);
+
+        $email = trim((string) $this->request->getPost('newsletter_email'));
+        if (! $validation->run(['newsletter_email' => $email])) {
+            $err = $validation->getError('newsletter_email') ?: 'Please fix the error and try again.';
+            return redirect()->to('/')
+                ->withInput()
+                ->with('newsletter_error', $err);
+        }
+
+        $model = model(NewsletterSubscriberModel::class);
+
+        try {
+            $model->subscribe($email, 'popup');
+        } catch (\Throwable $e) {
+            return redirect()->to('/')
+                ->withInput()
+                ->with('newsletter_error', 'Something went wrong. Please try again later.');
+        }
+
         return redirect()->to('/')->with('success', 'Thanks for subscribing!');
     }
 

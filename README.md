@@ -33,30 +33,44 @@ Threadline is a **portfolio-grade application** that demonstrates:
   - Category browsing
   - Thread creation + editing (author-only)
   - Replies
-  - Pagination for threads and replies
+  - Pagination for threads (10 per page) and replies; custom thread pagination (5 page numbers + prev/next chevrons)
+  - Thread search (title and body, case-insensitive)
   - Optional thread background images
+  - Author names and avatars (display name when set, else username) — clickable to user profiles
 
 - **Profiles & Settings**
   - Public user profiles
   - Profile editing (avatar, display name, bio)
-  - Preferences (timezone, marketing + notification preferences)
+  - Preferences (timezone, theme, marketing, notifications, **newsletter**)
+  - Newsletter toggle in settings syncs with newsletter backend (subscribe/unsubscribe)
 
 - **UI**
   - Light / Dark / Auto theme modes (stored per user)
+  - Global footer (except auth pages) with nav links, Guidelines, Support, Privacy, Terms
+  - Header shows user display name or username; portfolio disclaimer banner
+  - Cookie consent banner (Accept, Learn more → Privacy #cookies)
+  - Newsletter pop-up for logged-out users (corner, dismissible)
+
+- **Support & Legal**
+  - Support page (`/support`) — FAQ + Get in touch (e.g. Instagram)
+  - Privacy Policy (`/privacy`), Terms of Service (`/terms`), Community Guidelines (`/guidelines`)
+  - Newsletter backend: `newsletter_subscribers` table, validation, pop-up form + settings sync
 
 ### Planned / Not Yet Implemented
 
 - Role-based access control (Admin / Moderator / Member)
 - Moderation dashboards, reports, queues, audit logs
-- Read/unread tracking
 - Full notifications system (delivery + UI)
-- Searching threads
+- Dashboard, About, Notifications (placeholder links exist)
 - Favorite threads
-- Cookies pop-up
-- Guidelines page
-- Footer section
-
-
+- Edit replies
+- Delete replies
+- Delete posts
+- **Content reporting** — report threads or posts for moderation (Guidelines reference “reporting tools when implemented”)
+- **User blocking** — block other users (hide their content, restrict interactions)
+- **Thread sorting** — user-selectable sort (e.g. newest, most replies, latest activity)
+- **Draft threads / replies** — save drafts before posting (local or server-side)
+- User Ranking - based on their activity (number of threads and replies they post)
 
 ### Security
 
@@ -74,7 +88,11 @@ Routes below reflect `app/Config/Routes.php`.
 ### Public
 
 - `/` — Home
-- `/newsletter` (POST)
+- `/newsletter` (POST) — newsletter signup (pop-up or similar)
+- `/support` (GET) — FAQ + contact
+- `/guidelines` (GET) — Community guidelines
+- `/privacy` (GET) — Privacy policy
+- `/terms` (GET) — Terms of service
 - `/login` (GET/POST)
 - `/register` (GET/POST)
 - `/forgot-password` (GET/POST)
@@ -83,7 +101,7 @@ Routes below reflect `app/Config/Routes.php`.
 - `/auth/google` (GET)
 - `/auth/google/callback` (GET)
 - `/categories` (GET)
-- `/threads` (GET)
+- `/threads` (GET) — list (search, category filter, pagination)
 - `/threads/{slug}` (GET)
 - `/threads/{slug}/page/{n}` (GET)
 - `/users/{username}` (GET)
@@ -153,4 +171,4 @@ Routes below reflect `app/Config/Routes.php`.
 
 ## Environment Configuration
 
-See `env` file
+Copy `env` to `.env` and configure database, SMTP, Google OAuth, and reCAPTCHA keys as needed.

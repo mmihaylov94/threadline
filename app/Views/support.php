@@ -1,13 +1,11 @@
 <?= $this->extend('layout') ?>
 
 <?= $this->section('styles') ?>
-<!-- Reuse home page styling for FAQ + contact sections -->
 <link href="<?= base_url('assets/home.css') ?>" rel="stylesheet">
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
 
-<!-- FAQ / Guidelines -->
 <section class="home-faq" id="faq">
     <div class="container">
         <h2 class="home-faq__title">FAQ</h2>
@@ -63,7 +61,6 @@
     </div>
 </section>
 
-<!-- Get in touch -->
 <section class="home-contact" id="get-in-touch">
     <div class="container">
         <h2 class="home-contact__title">Get in touch</h2>
@@ -98,4 +95,3 @@
 </section>
 
 <?= $this->endSection() ?>
-

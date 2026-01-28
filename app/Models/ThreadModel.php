@@ -49,16 +49,26 @@ class ThreadModel extends Model
     ];
 
     /**
-     * Get recent threads paginated, with category and author, optionally filtered by category slug
+     * Get recent threads paginated, with category and author.
+     * Optionally filtered by category slug and/or case-insensitive search on title and body.
      */
-    public function getRecentPaginated(int $perPage = 20, ?string $categorySlug = null): array
+    public function getRecentPaginated(int $perPage = 20, ?string $categorySlug = null, ?string $search = null): array
     {
-        $builder = $this->select('threads.*, categories.name as category_name, categories.slug as category_slug, users.username as author_username')
+        $builder = $this->select('threads.*, categories.name as category_name, categories.slug as category_slug, users.username as author_username, user_profiles.display_name as author_display_name, user_profiles.avatar_path as author_avatar_path')
             ->join('categories', 'categories.id = threads.category_id')
-            ->join('users', 'users.id = threads.author_id');
+            ->join('users', 'users.id = threads.author_id')
+            ->join('user_profiles', 'user_profiles.user_id = users.id', 'left');
 
         if ($categorySlug !== null && $categorySlug !== '') {
             $builder->where('categories.slug', $categorySlug);
+        }
+
+        if ($search !== null && $search !== '') {
+            $term = '%' . strtolower(trim($search)) . '%';
+            $builder->groupStart()
+                ->where('LOWER(threads.title) LIKE', $term)
+                ->orWhere('LOWER(threads.body) LIKE', $term)
+                ->groupEnd();
         }
 
         $threads = $builder->orderBy('COALESCE(threads.last_post_at, threads.created_at)', 'DESC', false)
@@ -72,9 +82,10 @@ class ThreadModel extends Model
      */
     public function findBySlug(string $slug)
     {
-        return $this->select('threads.*, categories.name as category_name, categories.slug as category_slug, users.username as author_username')
+        return $this->select('threads.*, categories.name as category_name, categories.slug as category_slug, users.username as author_username, user_profiles.display_name as author_display_name, user_profiles.avatar_path as author_avatar_path')
             ->join('categories', 'categories.id = threads.category_id')
             ->join('users', 'users.id = threads.author_id')
+            ->join('user_profiles', 'user_profiles.user_id = users.id', 'left')
             ->where('threads.slug', $slug)
             ->first();
     }

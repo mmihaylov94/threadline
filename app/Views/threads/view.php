@@ -27,13 +27,36 @@
 <header class="thread-view-header<?= !empty($thread['background_image']) ? ' thread-view-header--has-image' : '' ?>"<?= !empty($thread['background_image']) ? ' style="background-image: url(\'' . esc($thread['background_image']) . '\');"' : '' ?>>
     <h1 class="mb-2"><?= esc($thread['title']) ?></h1>
     <p class="thread-view-header__meta mb-0">
-        by <?= esc($thread['author_username']) ?>
-        &middot; <?= esc($thread['created_at']) ?>
+        <span class="thread-view-header__meta-by">by</span>
+        <span class="thread-view-header__author">
+        <?php
+        $threadAuthorUsername = $thread['author_username'] ?? '';
+        $threadAuthorDn = trim((string) ($thread['author_display_name'] ?? ''));
+        $threadAuthorLabel = $threadAuthorDn !== '' ? $threadAuthorDn : $threadAuthorUsername;
+        $threadAuthorAvatar = isset($thread['author_avatar_path']) && trim((string) $thread['author_avatar_path']) !== '' ? trim((string) $thread['author_avatar_path']) : null;
+        if ($threadAuthorUsername !== ''): ?>
+            <a href="<?= base_url('users/' . esc($threadAuthorUsername)) ?>" class="thread-view-header__author-link">
+                <?php if ($threadAuthorAvatar): ?>
+                    <img src="<?= esc($threadAuthorAvatar) ?>" alt="" class="thread-view-header__author-avatar" width="24" height="24">
+                <?php endif; ?>
+                <?= esc($threadAuthorLabel) ?>
+            </a>
+        <?php else: ?>
+            <?php if ($threadAuthorAvatar): ?>
+                <img src="<?= esc($threadAuthorAvatar) ?>" alt="" class="thread-view-header__author-avatar" width="24" height="24">
+            <?php endif; ?>
+            <span><?= esc($threadAuthorLabel) ?></span>
+        <?php endif; ?>
+        </span>
+        <span class="thread-view-header__meta-sep">·</span>
+        <span class="thread-view-header__meta-date"><?= esc($thread['created_at']) ?></span>
         <?php if (!empty($thread['edited_at'])): ?>
-            &middot; Last edited <?= esc($thread['edited_at']) ?>
+            <span class="thread-view-header__meta-sep">·</span>
+            <span>Last edited <?= esc($thread['edited_at']) ?></span>
         <?php endif; ?>
         <?php if (session()->has('user_id') && (int) $thread['author_id'] === (int) session()->get('user_id')): ?>
-            &middot; <a href="<?= base_url('threads/' . $thread['id'] . '/edit') ?>">Edit</a>
+            <span class="thread-view-header__meta-sep">·</span>
+            <a href="<?= base_url('threads/' . (int) $thread['id'] . '/edit') ?>">Edit</a>
         <?php endif; ?>
     </p>
 </header>
@@ -59,8 +82,28 @@
     <?php foreach ($posts as $p): ?>
         <div class="forum-reply-card">
             <p class="forum-reply-card__meta">
-                <strong><?= esc($p['author_username']) ?></strong>
-                <span class="text-muted small"><?= esc($p['created_at']) ?></span>
+                <?php
+                $replyAuthorUsername = $p['author_username'] ?? '';
+                $replyAuthorDn = trim((string) ($p['author_display_name'] ?? ''));
+                $replyAuthorLabel = $replyAuthorDn !== '' ? $replyAuthorDn : $replyAuthorUsername;
+                $replyAuthorAvatar = isset($p['author_avatar_path']) && trim((string) $p['author_avatar_path']) !== '' ? trim((string) $p['author_avatar_path']) : null;
+                ?>
+                <span class="forum-reply-card__author">
+                    <?php if ($replyAuthorUsername !== ''): ?>
+                        <a href="<?= base_url('users/' . esc($replyAuthorUsername)) ?>" class="forum-reply-card__author-link">
+                            <?php if ($replyAuthorAvatar): ?>
+                                <img src="<?= esc($replyAuthorAvatar) ?>" alt="" class="forum-reply-card__author-avatar" width="24" height="24">
+                            <?php endif; ?>
+                            <strong><?= esc($replyAuthorLabel) ?></strong>
+                        </a>
+                    <?php else: ?>
+                        <?php if ($replyAuthorAvatar): ?>
+                            <img src="<?= esc($replyAuthorAvatar) ?>" alt="" class="forum-reply-card__author-avatar" width="24" height="24">
+                        <?php endif; ?>
+                        <strong><?= esc($replyAuthorLabel) ?></strong>
+                    <?php endif; ?>
+                </span>
+                <span class="forum-reply-card__meta-date text-muted small"><?= esc($p['created_at']) ?></span>
             </p>
             <div class="forum-reply-card__body">
                 <?php
